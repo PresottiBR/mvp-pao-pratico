@@ -1,6 +1,6 @@
 # LogControl – Sistema de Controle Logístico
 
-O **LogControl** é um sistema web desenvolvido como MVP para controle logístico de carregamentos.
+O **LogControl** é um sistema web desenvolvido como **MVP (Minimum Viable Product)** para controle logístico de carregamentos.
 
 O objetivo do projeto é registrar e acompanhar informações de transporte de forma organizada e precisa, garantindo maior transparência no processo logístico.
 
@@ -8,97 +8,96 @@ O sistema foi criado para evitar divergências de informações e possíveis irr
 
 ---
 
-### Funcionalidades ###
+## Funcionalidades
 
-- Registro de carregamentos
-- Cadastro de motorista
-- Registro de veículo
-- Registro de placa
-- Armazenamento em banco de dados
-- Listagem de carregamentos registrados
-- API documentada com Swagger
-
----
-
-### Funçõs Utilizadas ###
-
-Backend:
-- Python
-- Flask
-- SQLite
-- Flasgger (Swagger)
-
-Frontend:
-- HTML
-- CSS
-- JavaScript
+* Registro de carregamentos
+* Cadastro de motorista
+* Registro de veículo
+* Registro de placa
+* Armazenamento em banco de dados
+* Listagem de carregamentos registrados
+* API documentada com Swagger
 
 ---
 
-# Estrutura do Projeto
+## Tecnologias Utilizadas
+
+### Backend
+
+* Python
+* Flask
+* SQLite
+* Flasgger (Swagger)
+
+### Frontend
+
+* HTML
+* CSS
+* JavaScript
+
+---
+
+## Estrutura do Projeto
 
 logcontrol
 │
 ├── backend-api
-│ ├── app.py
-│ ├── database.db
+│   ├── app.py
+│   └── database.db
 │
 ├── frontend-app
-│ └── index.html
+│   └── index.html
+│
+└── README.md
 
+---
 
+## Como Executar o Projeto
 
-#############----- Como executar o projeto -----##############
+### 1 Clonar o repositório
 
-## 1. Clonar o repositório ###
+git clone https://github.com/PresottiBR/LogControl-MVP
 
----> git clone https://github.com/PresottiBR/LogControl-MVP  <---
-
-
-### 2. Acessar a pasta do backend  ###
+### 2 Acessar a pasta do backend
 
 cd backend-api
 
-
-### 3. Ativar ambiente virtual ###
+### 3 Ativar ambiente virtual
 
 source ../.venv/bin/activate
 
-### 4. Executar a API ###
+### 4 Executar a API
 
-python3.13 app.py
+python3 app.py
 
- 
-******---->  A API será executada em:
+A API será executada em:
 
 http://127.0.0.1:5000
 
+---
 
----****---****----****----
-
-### Documentação da API (Swagger) ###
+## Documentação da API (Swagger)
 
 A documentação da API pode ser acessada em:
 
 http://127.0.0.1:5000/apidocs
 
-
-
-
 ---
 
-### Interface do Sistema ###
+## Interface do Sistema
 
 O frontend foi desenvolvido em **HTML, CSS e JavaScript**, permitindo registrar carregamentos e visualizar os dados registrados.
 
-Para utilizar a interface, basta abrir o arquivo:
-
-frontend-app/index.html
+Após iniciar a API, a interface pode ser acessada em:
 
 http://127.0.0.1:5000/app
 
-######### Autor #########
+### Exemplo da Interface
 
-Tiago Presotti Borges
+![LogControl](images/logcontrol.png)
+---
 
+## Autor
+
+**Tiago Presotti Borges**
 
