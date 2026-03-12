@@ -94,7 +94,7 @@ http://127.0.0.1:5000/app
 
 ### Exemplo da Interface
 
-![LogControl](images/logcontrol.png)
+images/logcontrol.png
 ---
 
 ## Autor
