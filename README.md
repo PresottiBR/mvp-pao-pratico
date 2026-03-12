@@ -95,7 +95,7 @@ Para utilizar a interface, basta abrir o arquivo:
 
 frontend-app/index.html
 
-
+http://127.0.0.1:5000/app
 
 ######### Autor #########
 
