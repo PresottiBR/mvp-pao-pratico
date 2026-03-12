@@ -54,12 +54,18 @@ def home():
 
 @app.route("/carregamentos")
 def listar_carregamentos():
+    """
+    Listar carregamentos
+    ---
+    responses:
+      200:
+        description: Lista de carregamentos registrados
+    """
 
     conexao = sqlite3.connect("database.db")
     cursor = conexao.cursor()
 
     cursor.execute("SELECT motorista, veiculo, placa FROM carregamentos")
-
     registros = cursor.fetchall()
 
     conexao.close()
@@ -77,6 +83,26 @@ def listar_carregamentos():
         
 @app.route("/carregamento", methods=["POST"])
 def criar_carregamento():
+    """
+    Criar carregamento
+    ---
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            motorista:
+              type: string
+            veiculo:
+              type: string
+            placa:
+              type: string
+    responses:
+      200:
+        description: Carregamento registrado com sucesso
+    """
 
     dados = request.json
 
