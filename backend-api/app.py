@@ -1,7 +1,10 @@
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
+from flask_cors import CORS
 import sqlite3
 
 app = Flask(__name__)
+CORS(app)
+
 def criar_banco():
     conexao = sqlite3.connect("database.db")
     cursor = conexao.cursor()
@@ -23,24 +26,37 @@ def criar_banco():
     conexao.commit()
     conexao.close()
 
+@app.route("/app")
+def abrir_frontend():
+    return send_from_directory("../frontend-app", "index.html")    
+
 @app.route("/")
 def home():
-    return {"mensagem": "API do sistema Pão Prático funcionando"}
+    return {"mensagem": "API do sistema LogControl funcionando"}
+
 @app.route("/carregamentos")
 def listar_carregamentos():
-    return {
-        "carregamentos": [
-            {
-                "motorista": "João",
-                "carro": "Caminhão",
-                "produto": "Pão Francês",
-                "destino": "Padaria Central",
-                "valor_abastecimento": 150.00,
-                "km_saída": 45,
-                "km_chegada": 47
-            }
-        ]
-    }
+
+    conexao = sqlite3.connect("database.db")
+    cursor = conexao.cursor()
+
+    cursor.execute("SELECT motorista, veiculo, placa FROM carregamentos")
+
+    registros = cursor.fetchall()
+
+    conexao.close()
+
+    lista = []
+
+    for r in registros:
+        lista.append({
+            "motorista": r[0],
+            "veiculo": r[1],
+            "placa": r[2]
+        })
+
+    return {"carregamentos": lista}
+        
 @app.route("/carregamento", methods=["POST"])
 def criar_carregamento():
 
@@ -51,17 +67,12 @@ def criar_carregamento():
 
     cursor.execute("""
         INSERT INTO carregamentos
-        (motorista, veiculo, placa, produto, destino, km_planejado, km_rodado, data)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        (motorista, veiculo, placa)
+        VALUES (?, ?, ?)
     """, (
         dados["motorista"],
         dados["veiculo"],
-        dados["placa"],
-        dados["produto"],
-        dados["destino"],
-        dados["km_planejado"],
-        dados["km_rodado"],
-        dados["data"]
+        dados["placa"]
     ))
 
     conexao.commit()
