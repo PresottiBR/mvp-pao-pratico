@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>LogControl</title>
+
+<style>
+
+body{
+background-color: orange;
+font-family: Arial, sans-serif;
+display: flex;
+justify-content: center;
+align-items: center;
+min-height: 100vh;
+margin: 0;
+}
+
+.container{
+background-color: white;
+padding: 40px;
+border-radius: 10px;
+box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+width: 420px;
+}
+
+h1{
+text-align: center;
+}
+
+h2{
+text-align: center;
+}
+
+input{
+width: 100%;
+padding: 8px;
+margin-top: 5px;
+margin-bottom: 15px;
+}
+
+button{
+width: 100%;
+padding: 10px;
+background-color: orange;
+border: none;
+color: white;
+font-weight: bold;
+cursor: pointer;
+border-radius: 5px;
+}
+
+button:hover{
+background-color: darkorange;
+}
+
+table{
+width: 100%;
+margin-top: 20px;
+border-collapse: collapse;
+}
+
+th, td{
+border: 1px solid #ccc;
+padding: 8px;
+text-align: center;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>LogControl</h1>
+<h2>Sistema de Controle Logístico</h2>
+
+<form id="formCarregamento">
+
+Motorista:<br>
+<input type="text" id="motorista"><br>
+
+Veículo:<br>
+<input type="text" id="veiculo"><br>
+
+Placa:<br>
+<input type="text" id="placa"><br>
+
+<button type="submit">Registrar</button>
+
+</form>
+
+<h2>Carregamentos Registrados</h2>
+
+<table>
+
+<thead>
+<tr>
+<th>Motorista</th>
+<th>Veículo</th>
+<th>Placa</th>
+</tr>
+</thead>
+
+<tbody id="listaCarregamentos"></tbody>
+
+</table>
+
+</div>
+
+<script>
+
+async function carregarCarregamentos(){
+
+const resposta = await fetch("/carregamentos");
+const dados = await resposta.json();
+
+const lista = document.getElementById("listaCarregamentos");
+
+lista.innerHTML = "";
+
+dados.carregamentos.forEach(c => {
+
+const linha = document.createElement("tr");
+
+linha.innerHTML = `
+<td>${c.motorista}</td>
+<td>${c.veiculo}</td>
+<td>${c.placa}</td>
+`;
+
+lista.appendChild(linha);
+
+});
+
+}
+
+carregarCarregamentos();
+
+document.getElementById("formCarregamento").addEventListener("submit", async function(e){
+
+e.preventDefault();
+
+const dados = {
+
+motorista: document.getElementById("motorista").value,
+veiculo: document.getElementById("veiculo").value,
+placa: document.getElementById("placa").value
+
+};
+
+const resposta = await fetch("/carregamento",{
+
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify(dados)
+
+});
+
+const resultado = await resposta.json();
+
+alert(resultado.mensagem);
+
+carregarCarregamentos();
+
+});
+
+</script>
+
+</body>
+
+</html>
