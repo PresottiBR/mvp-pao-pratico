@@ -105,7 +105,8 @@ Placa:<br>
 </tr>
 </thead>
 
-<tbody id="listaCarregamentos"></tbody>
+<tbody id="listaCarregamentos">
+</tbody>
 
 </table>
 
@@ -116,23 +117,22 @@ Placa:<br>
 async function carregarCarregamentos(){
 
 const resposta = await fetch("/carregamentos");
+
 const dados = await resposta.json();
 
-const lista = document.getElementById("listaCarregamentos");
+const tabela = document.getElementById("listaCarregamentos");
 
-lista.innerHTML = "";
+tabela.innerHTML = "";
 
 dados.carregamentos.forEach(c => {
 
-const linha = document.createElement("tr");
-
-linha.innerHTML = `
+tabela.innerHTML += `
+<tr>
 <td>${c.motorista}</td>
 <td>${c.veiculo}</td>
 <td>${c.placa}</td>
+</tr>
 `;
-
-lista.appendChild(linha);
 
 });
 
@@ -165,6 +165,10 @@ body:JSON.stringify(dados)
 const resultado = await resposta.json();
 
 alert(resultado.mensagem);
+
+document.getElementById("motorista").value = "";
+document.getElementById("veiculo").value = "";
+document.getElementById("placa").value = "";
 
 carregarCarregamentos();
 

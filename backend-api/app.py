@@ -1,9 +1,27 @@
 from flask import Flask, request, send_from_directory
 from flask_cors import CORS
+from flasgger import Swagger
 import sqlite3
 
 app = Flask(__name__)
 CORS(app)
+
+swagger_config = {
+    "headers": [],
+    "specs": [
+        {
+            "endpoint": 'apispec',
+            "route": '/apispec.json',
+            "rule_filter": lambda rule: True,
+            "model_filter": lambda tag: True,
+        }
+    ],
+    "static_url_path": "/flasgger_static",
+    "swagger_ui": True,
+    "specs_route": "/apidocs/"
+}
+
+swagger = Swagger(app, config=swagger_config)
 
 def criar_banco():
     conexao = sqlite3.connect("database.db")
