@@ -5,24 +5,10 @@ import sqlite3
 
 app = Flask(__name__)
 CORS(app)
+Swagger(app)
 
-swagger_config = {
-    "headers": [],
-    "specs": [
-        {
-            "endpoint": 'apispec',
-            "route": '/apispec.json',
-            "rule_filter": lambda rule: True,
-            "model_filter": lambda tag: True,
-        }
-    ],
-    "static_url_path": "/flasgger_static",
-    "swagger_ui": True,
-    "specs_route": "/apidocs/"
-}
 
-swagger = Swagger(app, config=swagger_config)
-
+# cria o banco se não existir
 def criar_banco():
     conexao = sqlite3.connect("database.db")
     cursor = conexao.cursor()
@@ -32,76 +18,100 @@ def criar_banco():
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         motorista TEXT,
         veiculo TEXT,
-        placa TEXT,
-        produto TEXT,
-        destino TEXT,
-        km_planejado INTEGER,
-        km_rodado INTEGER,
-        data TEXT
+        placa TEXT
     )
     """)
 
     conexao.commit()
     conexao.close()
 
+
+# abre o frontend
 @app.route("/app")
 def abrir_frontend():
-    return send_from_directory("../frontend-app", "index.html")    
+    return send_from_directory("../frontend-app", "index.html")
 
+
+# rota inicial
 @app.route("/")
 def home():
-    return {"mensagem": "API do sistema LogControl funcionando"}
+    return {"mensagem": "API LogControl funcionando"}
 
-@app.route("/carregamentos")
+
+# listar todos os carregamentos
+@app.route("/carregamentos", methods=["GET"])
 def listar_carregamentos():
     """
-    Listar carregamentos
+    Listar todos os carregamentos
     ---
     responses:
       200:
-        description: Lista de carregamentos registrados
+        description: Lista de carregamentos
     """
 
     conexao = sqlite3.connect("database.db")
     cursor = conexao.cursor()
 
-    cursor.execute("SELECT motorista, veiculo, placa FROM carregamentos")
-    registros = cursor.fetchall()
+    cursor.execute("SELECT id, motorista, veiculo, placa FROM carregamentos")
+    dados = cursor.fetchall()
 
     conexao.close()
 
     lista = []
 
-    for r in registros:
+    for item in dados:
         lista.append({
-            "motorista": r[0],
-            "veiculo": r[1],
-            "placa": r[2]
+            "id": item[0],
+            "motorista": item[1],
+            "veiculo": item[2],
+            "placa": item[3]
         })
 
     return {"carregamentos": lista}
-        
+
+
+# buscar por id
+@app.route("/carregamento/<int:id>", methods=["GET"])
+def buscar_carregamento(id):
+    """
+    Buscar carregamento por id
+    ---
+    parameters:
+      - name: id
+        in: path
+        type: integer
+        required: true
+    """
+
+    conexao = sqlite3.connect("database.db")
+    cursor = conexao.cursor()
+
+    cursor.execute("SELECT id, motorista, veiculo, placa FROM carregamentos WHERE id = ?", (id,))
+    dado = cursor.fetchone()
+
+    conexao.close()
+
+    if dado:
+        return {
+            "id": dado[0],
+            "motorista": dado[1],
+            "veiculo": dado[2],
+            "placa": dado[3]
+        }
+    else:
+        return {"erro": "Não encontrado"}
+
+
+# criar carregamento
 @app.route("/carregamento", methods=["POST"])
 def criar_carregamento():
     """
-    Criar carregamento
+    Criar novo carregamento
     ---
     parameters:
-      - name: body
-        in: body
+      - in: body
+        name: body
         required: true
-        schema:
-          type: object
-          properties:
-            motorista:
-              type: string
-            veiculo:
-              type: string
-            placa:
-              type: string
-    responses:
-      200:
-        description: Carregamento registrado com sucesso
     """
 
     dados = request.json
@@ -109,20 +119,40 @@ def criar_carregamento():
     conexao = sqlite3.connect("database.db")
     cursor = conexao.cursor()
 
-    cursor.execute("""
-        INSERT INTO carregamentos
-        (motorista, veiculo, placa)
-        VALUES (?, ?, ?)
-    """, (
-        dados["motorista"],
-        dados["veiculo"],
-        dados["placa"]
-    ))
+    cursor.execute(
+        "INSERT INTO carregamentos (motorista, veiculo, placa) VALUES (?, ?, ?)",
+        (dados["motorista"], dados["veiculo"], dados["placa"])
+    )
 
     conexao.commit()
     conexao.close()
 
-    return {"mensagem": "Carregamento registrado com sucesso"}
+    return {"mensagem": "Registrado com sucesso"}
+
+
+# deletar carregamento
+@app.route("/carregamento/<int:id>", methods=["DELETE"])
+def deletar_carregamento(id):
+    """
+    Deletar carregamento
+    ---
+    parameters:
+      - name: id
+        in: path
+        type: integer
+        required: true
+    """
+
+    conexao = sqlite3.connect("database.db")
+    cursor = conexao.cursor()
+
+    cursor.execute("DELETE FROM carregamentos WHERE id = ?", (id,))
+
+    conexao.commit()
+    conexao.close()
+
+    return {"mensagem": "Deletado com sucesso"}
+
 
 if __name__ == "__main__":
     criar_banco()
