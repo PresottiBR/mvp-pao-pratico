@@ -97,6 +97,11 @@ http://127.0.0.1:5000/app
 [![LogControl](images/LogControl.png)](images/LogControl.png)
 ---
 
+## Links para acessar vídeo
+
+YouTube: https://youtu.be/Nb8ETZ5jOmQ
+Google Drive: https://drive.google.com/file/d/1ZXa9gI82PfbstdWgjccgyfHkiTzidCCa/view?usp=drive_link
+
 ## Autor
 
 **Tiago Presotti Borges**
